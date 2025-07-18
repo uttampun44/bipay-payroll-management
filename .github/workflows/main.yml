@@ -18,8 +18,9 @@ jobs:
             # git config
             - name: Git config
               run: |
-                git config --global pull.ff true
-          
+                git config --global user.name "uttampun"
+                git config --global user.email "uttampun50@gmail.com"
+
             # pull code from development branch to main branch and merge and unrelated histories
             - name: Pull code from development branch to main branch
               run: |

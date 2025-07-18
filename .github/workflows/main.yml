@@ -5,8 +5,8 @@ name: BIPay Payroll Management
 on:
   push:
     branches:
-      - main
-
+       - development
+       
       #jobs
 jobs:
     build:
@@ -14,7 +14,21 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
-            
+
+            # git config
+            - name: Git config
+              run: |
+                git config --global user.name "uttampun"
+                git config --global user.email "uttampun50@gmail.com"
+
+            # pull code from development branch to main branch
+            - name: Pull code from development branch to main branch
+              run: |
+                git checkout main
+                git pull origin main
+                git merge origin/development --no-edit
+                git push origin main
+
               #create env file
             - name: Create .env file
               run: touch .env

@@ -26,10 +26,9 @@ jobs:
               run: |
                 git fetch origin
                 git checkout main
-                git config pull.rebase false
                 git pull origin main
                 git merge origin/development --allow-unrelated-histories --no-edit
-                
+                git config pull.rebase false
                 git push origin main
 
               #create env file

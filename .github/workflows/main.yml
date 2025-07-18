@@ -1,11 +1,11 @@
 #name
 name: Bipay Payroll Management
 
-#on
+#trgger on push to main branch
 on:
   push:
     branches:
-       - development
+       - main
 
       #jobs
 jobs:
@@ -24,6 +24,7 @@ jobs:
             # pull code from development branch to main branch
             - name: Pull code from development branch to main branch
               run: |
+                git fetch origin
                 git checkout main
                 git pull origin main
                 git merge origin/development --no-edit

@@ -24,10 +24,8 @@ jobs:
             # pull code from development branch to main branch
             - name: Pull code from development branch to main branch
               run: |
-                git fetch origin
                 git checkout main
-                git pull origin main
-                git merge origin/development --no-edit
+                git pull origin development
                 git push origin main
 
               #create env file

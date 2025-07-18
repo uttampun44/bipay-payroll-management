@@ -1,23 +1,15 @@
 "use client";
 import Image from "next/image";
 import Login from "@assets/images/loginframe.png";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import Icon from "@/components/icon";
-import { useToggle } from "@hooks/useToggle";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignOutButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useToggle } from "../hooks/useToggle";
+import { Input } from "@/components/ui/input";
+import Icon from "@/components/icon";
+import { ClerkProvider, SignOutButton, SignUpButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/router";
 
 const loginSchema = z.object({
   email: z.string().email("Email is required"),
@@ -31,12 +23,25 @@ const loginSchema = z.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
       "Password must include uppercase, lowercase, number, and special character"
     ),
+  confirmPassword: z
+    .string()
+    .min(
+      8,
+      "Password must include uppercase, lowercase, number, and special character"
+    )
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
 });
 
 type Inputs = z.infer<typeof loginSchema>;
 
-export default function Home() {
+export default function Register() {
   const [showPassword, setShowPassword] = useToggle();
+  const [confirmPassword, setConfirmPassword] = useToggle();
+
+  const router = useRouter();
 
   const {
     register,
@@ -47,7 +52,11 @@ export default function Home() {
   const onSubmit = (data: Inputs) => {
     console.log(data);
     try {
-      console.log(data);
+      if(data.password !== data.confirmPassword){
+        alert("Passwords do not match");
+        return;  
+      }
+      router.push("/register");
     } catch (error) {}
   };
 
@@ -73,7 +82,7 @@ export default function Home() {
           />
         </div>
         <div className="max-w-md w-full flex flex-col items-center justify-center gap-4 py-20">
-          <h1 className="text-4xl font-bold">Sign In</h1>
+          <h1 className="text-4xl font-bold">Register</h1>
           <div className="formField w-full">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="inputField space-y-4">
@@ -113,33 +122,40 @@ export default function Home() {
                 <div className="errors my-1.5 text-base font-normal text-red-500">
                   {errors.password && <p>{errors.password.message}</p>}
                 </div>
-                <div className="recover flex justify-end text-base font-medium my-2.5 text-[#6C737F]">
-                  <Link href="/forget-password">Forget Password?</Link>
+
+                <div className="confirmPassword w-full my-2.5 relative">
+                  <Input
+                    type={confirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    className="w-full"
+                    {...register("confirmPassword")}
+                  />
+
+                  {confirmPassword ? (
+                    <Icon
+                      iconName="passwordShow"
+                      className="absolute right-2 top-2"
+                      onClick={() => setConfirmPassword(false)}
+                    />
+                  ) : (
+                    <Icon
+                      iconName="passwordClose"
+                      className="absolute right-2 top-2"
+                      onClick={() => setConfirmPassword(true)}
+                    />
+                  )}
+                </div>
+                <div className="errors my-1.5 text-base font-normal text-red-500">
+                  {errors.password && <p>{errors.password.message}</p>}
                 </div>
               </div>
-              <div className="submit my-8 flex justify-center gap-x-2.5 px-1.5">
-                <SignOutButton>
-                  <SignInButton>
-                   <Button type="button" className="w-1/2 bg-red-700">
-                    <Icon iconName="github" className="w-6 h-6" />
-                   </Button>
-                  </SignInButton>
-                </SignOutButton>
-                <SignOutButton>
-                  <SignUpButton>
-                    <Button type="button" className="w-1/2 bg-red-700">
-                      <Icon iconName="facebook" className="w-6 h-6" />
-                    </Button>
-                  </SignUpButton>
-                </SignOutButton>
-              </div>
 
-              <div className="signin">
+              <div className="submit my-8">
                 <Button
                   className="bg-blue-500 text-white w-full py-2.5 rounded-md hover:bg-none"
                   type="submit"
                 >
-                  Sign In
+                  Sign Up
                 </Button>
               </div>
             </form>

@@ -20,7 +20,7 @@ export default function Header() {
           <nav>
             <div className="nav-menu flex gap-x-2.5 text-base font-normal"> 
                 <Link href="/" className={clsx(" p-1 rounded-md",path == "/" ? "bg-white text-blue-700 border-2" : 'text-black bg-none')}>Sign In </Link>
-                <Link href="/login" className={clsx(" p-1 rounded-md",path == "/login" ? "bg-white text-blue-700 border-2" : 'text-black bg-none')}>Sign Up </Link>
+                <Link href="/register" className={clsx(" p-1 rounded-md",path == "/register" ? "bg-white text-blue-700 border-2" : 'text-black bg-none')}>Register </Link>
             </div>
           </nav>
         </div>

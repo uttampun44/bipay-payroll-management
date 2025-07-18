@@ -1,12 +1,12 @@
 #name
-name: BIPay Payroll Management
+name: Bipay Payroll Management
 
 #on
 on:
   push:
     branches:
        - development
-       
+
       #jobs
 jobs:
     build:

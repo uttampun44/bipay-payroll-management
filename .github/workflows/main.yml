@@ -21,16 +21,6 @@ jobs:
                 git config --global user.name "uttampun"
                 git config --global user.email "uttampun50@gmail.com"
 
-            # pull code from development branch to main branch and merge and unrelated histories
-            - name: Pull code from development branch to main branch
-              run: |
-                git fetch origin
-                git checkout main
-                git pull origin main
-                git merge origin/development --allow-unrelated-histories --no-edit
-                git config pull.rebase false
-                git push origin main
-
               #create env file
             - name: Create .env file
               run: touch .env

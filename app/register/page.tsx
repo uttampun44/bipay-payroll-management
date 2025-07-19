@@ -7,9 +7,10 @@ import { useForm } from "react-hook-form";
 import { useToggle } from "../hooks/useToggle";
 import { Input } from "@/components/ui/input";
 import Icon from "@/components/icon";
-import { ClerkProvider, SignOutButton, SignUpButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { account, ID } from "../appwrite";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email("Email is required"),
@@ -49,14 +50,20 @@ export default function Register() {
     handleSubmit,
   } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
-  const onSubmit = (data: Inputs) => {
-    console.log(data);
+  const onSubmit = async (data: Inputs) => {
     try {
-      if(data.password !== data.confirmPassword){
-        alert("Passwords do not match");
-        return;  
+      if (data.password !== data.confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
       }
+      await account.create(
+        ID.unique(),
+        data.email,
+        data.password,
+        data.confirmPassword
+      );
       router.push("/register");
+      toast.success("Account created successfully");
     } catch (error) {}
   };
 

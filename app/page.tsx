@@ -6,18 +6,13 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Icon from "@/components/icon";
 import { useToggle } from "@hooks/useToggle";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignOutButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignInButton, SignOutButton, SignUpButton } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { account, client } from "./appwrite";
 
 const loginSchema = z.object({
   email: z.string().email("Email is required"),
@@ -37,18 +32,24 @@ type Inputs = z.infer<typeof loginSchema>;
 
 export default function Home() {
   const [showPassword, setShowPassword] = useToggle();
-
+  const router = useRouter();
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
-  const onSubmit = (data: Inputs) => {
+  const onSubmit = async (data: Inputs) => {
     console.log(data);
     try {
-      console.log(data);
-    } catch (error) {}
+      await account.createEmailPasswordSession(data.email, data.password);
+      const jwt = await account.createJWT();
+      localStorage.setItem("jwt_token", jwt.jwt);
+      toast.success("Successfully logged in");
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error("Login failed");
+    }
   };
 
   return (
@@ -120,9 +121,9 @@ export default function Home() {
               <div className="submit my-8 flex justify-center gap-x-2.5 px-1.5">
                 <SignOutButton>
                   <SignInButton>
-                   <Button type="button" className="w-1/2 bg-red-700">
-                    <Icon iconName="github" className="w-6 h-6" />
-                   </Button>
+                    <Button type="button" className="w-1/2 bg-red-700">
+                      <Icon iconName="github" className="w-6 h-6" />
+                    </Button>
                   </SignInButton>
                 </SignOutButton>
                 <SignOutButton>

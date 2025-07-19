@@ -1,12 +1,14 @@
 import Header from "@/components/header";
-import Layout from "./layout";
+import { ReactNode } from "react";
 
-export default function FrontLayout() {
+type frontProps = {
+    children: ReactNode
+}
+export default function FrontLayout({ children }: frontProps) {
   return (
-    <>
-       <Layout >
-          <Header />
-       </Layout>
-    </>
+     <>
+      <Header />
+      {children}
+     </>
   );
 }
